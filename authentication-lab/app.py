@@ -3,7 +3,7 @@ from flask import session as login_session
 import pyrebase
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
-app.config['SECRET_KEY'] = 'super-secret-key'
+app.config['SECRET_KEY'] = 'iqwuge92tye0h12ug98y'
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -19,34 +19,13 @@ def signin():
             error = "Authetication Failed"
     return render_template("signin.html")
 
-
-@app.route('/signup', methods=['GET', 'POST'], full_name, username, bio)
-def signup():
-    error = ''
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        userinputs = {'full_name':"", 'username':'', 'bio':""}
-        try:
-            login_session['user'] = auth.create_user_with_email_and_password(email, password)
-            return redirect(url_for('add_tweet'))
-        except:
-
-@app.route('/', methods=['GET', 'POST'])
-def signin():
-    error = ''
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        try:
-            login_session['user'] = auth.sign_in_with_email_and_password(email, password)
-            return redirect(url_for('add_tweet'))
-        except:
-            error = "Authetication Failed"
-    return render_template("signin.html")
+full_name = ''
+username = ''
+bio = ''
+userinputs = {}
 
 
-@app.route('/signup', methods=['GET', 'POST'], full_name, username, bio)
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error = ''
     if request.method == 'POST':
@@ -54,16 +33,28 @@ def signup():
         password = request.form['password']
         try:
             login_session['user'] = auth.create_user_with_email_and_password(email, password)
+            userinputs = {'full_name': request.form['full_name'], 'username':request.form['username'], 'bio':request.form['bio']}
+            db.child("Users").child(login_session)['user']['localId'].set(user)
+
             return redirect(url_for('add_tweet'))
         except:
             error = "Authetication Failed"  
-
     return render_template("signup.html")
 
 
 @app.route('/add_tweet', methods=['GET', 'POST'])
 def add_tweet():
+    if request.method == 'POST':
+        tweet = {'tweet_title': request.form['tweet_title'], 'Text': request.form['Text'], 'uid': db.child("Users").child(login_session['user']['localId']).set(user)}
+        db.child("Articles").push(tweet)
     return render_template("add_tweet.html")
+
+
+@app.route('/all_tweets', methods='GET', 'POST')
+def all_tweets():
+    if request.method == 'GET':
+        return render_template('tweets.html')
+
 
 
 config = {
@@ -85,3 +76,6 @@ db = firebase.database()
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+    

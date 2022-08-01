@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add Tweet</title>
 </head>
 <body>
-    Great Job!
+    Write Your Tweet Here:
 </body>
+<br>
+<form action="/add_tweet" method="POST"> 
+    <input type="text" name="tweet_title" placeholder="Title">
+    <input type="text" name="Text" placeholder="Text" maxlength="280">
+<div>
+            <input type="submit"/>
+        </div>
+</form>
+<br>
+    <a href="/all_tweets"><button>View All Tweets</button></a>
 </html>
