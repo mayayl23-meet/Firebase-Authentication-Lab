@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Signup</title>
+    <title>All Tweets</title>
 </head>
 <body>
-    <h3> {{tweet}} </h3>
+    {% for i in tweets %}
+    <li> {{tweets[i]}} </li> 
+    {% endfor %}
 </body>
 </html>

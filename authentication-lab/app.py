@@ -41,20 +41,30 @@ def signup():
             error = "Authetication Failed"  
     return render_template("signup.html")
 
+tweet = {}
 
 @app.route('/add_tweet', methods=['GET', 'POST'])
 def add_tweet():
     if request.method == 'POST':
-        tweet = {'tweet_title': request.form['tweet_title'], 'Text': request.form['Text'], 'uid': db.child("Users").child(login_session['user']['localId']).set(user)}
-        db.child("Articles").push(tweet)
+        Title = request.form['title']
+        Text = request.form['text']
+        try:
+            tweet = {'Title': request.form['title'], 'Text': request.form['text'], "uid": db.child("Users").child(login_session['user']['localId']).get().val()}
+            db.child("Tweets").push(tweet)
+            # db.child('tweet').child(login_session['tweet']['localId']).set(tweet)
+            # updated = {'tweet_title': request.form['tweet_title'], 'Text': request.form['Text'], 'uid': db.child("Users").child(login_session['user']['localId']).update(updated)}
+            # tweet = {'tweet_title': request.form['tweet_title'], 'Text': request.form['Text'], 'uid': db.child("Users").child(login_session['user']['localId']).set(tweet)}
+            return redirect(url_for('all_tweets'))
+        except:
+            error = "Authetication Failed"
     return render_template("add_tweet.html")
 
 
-@app.route('/all_tweets', methods='GET', 'POST')
+@app.route('/all_tweets', methods=['GET', 'POST'])
 def all_tweets():
-    if request.method == 'GET':
-        return render_template('tweets.html')
-
+    # if request.method == 'GET':
+        tweets = db.child("Tweets").get().val()
+        return render_template('tweets.html', tweets=tweets)
 
 
 config = {
